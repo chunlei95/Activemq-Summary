@@ -77,7 +77,7 @@ public class ActivemqProducer {
 ## 对象模型详解
 ### ActiveMQConnectionFactory
         ActiveMQConnectionFactory是用来创建连接(Connection)的对象, 它实现了QueueConnectionFactory以及
-        TopicConnectionFactory, 所以可以用它来创建QueueConnection以及TopicConnection。
+    TopicConnectionFactory, 所以可以用它来创建QueueConnection以及TopicConnection。
 #### 构造函数
 ##### ActiveMQConnectionFactory()
     默认构造函数, 使用该构造函数创建ActiveMQConnectionFactory对象会使用默认的连接用户名, 连接密码以及连接地址, 
