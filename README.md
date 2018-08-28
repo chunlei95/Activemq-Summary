@@ -80,8 +80,7 @@ public class ActivemqProducer {
     所以可以用它来创建QueueConnection以及TopicConnection。
 #### 构造函数
 ##### ActiveMQConnectionFactory()
-<p>默认构造函数, 使用该构造函数创建ActiveMQConnectionFactory对象会使用默认的连接用户名, 连接密码以及连接地址, 默认的连接地址为`ActiveMQConnectionFactory.DEFAULT_USER`, 默认的连接密码为`ActiveMQConnectionFactory.DEFAULT_PASSWORD`, 默认的
-连接地址为`ActiveMQConnectionFactory.DEFAULT_BROKER_URL`, 默认连接地址中的主机号为`localhost`, 端口号为`61616`.</p>
+    <p>默认构造函数, 使用该构造函数创建ActiveMQConnectionFactory对象会使用默认的连接用户名, 连接密码以及连接地址, 默认的连接地址为`ActiveMQConnectionFactory.DEFAULT_USER`, 默认的连接密码为`ActiveMQConnectionFactory.DEFAULT_PASSWORD`, 默认的连接地址为`ActiveMQConnectionFactory.DEFAULT_BROKER_URL`, 默认连接地址中的主机号为`localhost`, 端口号为`61616`.</p>
 ##### ActiveMQConnectionFactory(String brokerURL)
 ##### ActiveMQConnectionFactory(URI brokerURL)
 ##### ActiveMQConnectionFactory(String userName, String password, URI brokerURL)
