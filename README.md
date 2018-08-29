@@ -323,28 +323,29 @@ public class ActivemqTopicConsumer1 {
 ```
 ## 对象模型详解
 ### ActiveMQConnectionFactory
-        ActiveMQConnectionFactory是用来创建连接(Connection)的对象, 它实现了QueueConnectionFactory以及TopicConnectionFactory, 
-    所以可以用它来创建QueueConnection以及TopicConnection。
-####$构造函数
-#####ActiveMQConnectionFactory()
-        默认构造函数, 使用该构造函数创建ActiveMQConnectionFactory对象会使用默认的连接用户名, 连接密码以及连接地址, 默认的连接地
-    址为`ActiveMQConnectionFactory.DEFAULT_USER`, 默认的连接密码为ActiveMQConnectionFactory.DEFAULT_PASSWORD, 默认的连接地址为
-    ActiveMQConnectionFactory.DEFAULT_BROKER_URL, 默认连接地址中的主机号为localhost, 端口号为61616.
-#####ActiveMQConnectionFactory(String brokerURL)
-#####ActiveMQConnectionFactory(URI brokerURL)
-#####ActiveMQConnectionFactory(String userName, String password, URI brokerURL)
-#####ActiveMQConnectionFactory(String userName, String password, String brokerURL)
-####$方法
-#####createConnection()
-#####createConnection(String userName, String password)
-#####QueueConnection createQueueConnection()
-#####createQueueConnection(String userName, String password)
-#####createTopicConnection()
-#####createTopicConnection(String userName, String password)
-#####createActiveMQConnection()
-#####createActiveMQConnection(String userName, String password)
-#####createActiveMQConnection(Transport transport, JMSStatsImpl stats)
-#####
+        ActiveMQConnectionFactory是用来创建连接(Connection)的对象, 它实现了QueueConnectionFactory以及
+    TopicConnectionFactory, 所以可以用它来创建QueueConnection以及TopicConnection。
+#### 构造函数
+##### ActiveMQConnectionFactory()
+    默认构造函数, 使用该构造函数创建ActiveMQConnectionFactory对象会使用默认的连接用户名, 连接密码以及连接地址, 
+    默认的连接地址为`ActiveMQConnectionFactory.DEFAULT_USER`, 
+    默认的连接密码为`ActiveMQConnectionFactory.DEFAULT_PASSWORD`,
+    默认的连接地址为`ActiveMQConnectionFactory.DEFAULT_BROKER_URL`, 
+    默认连接地址中的主机号为`localhost`, 端口号为`61616`.
+##### ActiveMQConnectionFactory(String brokerURL)
+##### ActiveMQConnectionFactory(URI brokerURL)
+##### ActiveMQConnectionFactory(String userName, String password, URI brokerURL)
+##### ActiveMQConnectionFactory(String userName, String password, String brokerURL)
+#### 方法
+##### createConnection()
+##### createConnection(String userName, String password)
+##### QueueConnection createQueueConnection()
+##### createQueueConnection(String userName, String password)
+##### createTopicConnection()
+##### createTopicConnection(String userName, String password)
+##### createActiveMQConnection()
+##### createActiveMQConnection(String userName, String password)
+##### createActiveMQConnection(Transport transport, JMSStatsImpl stats)
 ### ActiveMQConnection
 
 ### ActiveMQSession
