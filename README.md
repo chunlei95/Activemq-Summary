@@ -10,7 +10,7 @@ activemq学习总结
 * ActiveMQMessageProducer(消息生产者)
 * ActiveMQMessageConsumer(消息消费者)
 * ActiveMQMessage(消息对象)
-## 点对点(队列queue)
+## 点对点消息模式(队列queue)
 ### 发送消息
     发送消息时需要关闭连接对象，释放资源，连接对象关闭了，就没有必要再关闭Session, Producer
 ```
@@ -203,9 +203,124 @@ public class ActivemqListenerConsumer {
     }
 }
 ```
-## 发布(pub)/订阅(sub)(topic)
+## 发布(pub)/订阅(sub)消息模式(topic)
+    需要先启动订阅者，才能启动发布者，否则订阅者将收不到消息.
 ### 发送消息
+```$xslt
+/**
+ * 需要先启动订阅者，才能启动发布者，否则订阅者将收不到消息.
+ *
+ * @author xzmeasy
+ * @since 2018/8/29
+ */
+public class ActivemqTopicProducer {
+
+    /** 默认连接用户名 */
+    private static final String USERNAME = ActiveMQConnection.DEFAULT_USER;
+
+    /** 默认连接密码 */
+    private static final String PASSWORD = ActiveMQConnection.DEFAULT_PASSWORD;
+
+    /** 默认连接地址 */
+    private static final String BROKERURL = ActiveMQConnection.DEFAULT_BROKER_URL;
+
+    /** 设置发送消息的数量*/
+    private static final Integer SEND_TIME = 10;
+
+    public static void main(String[] args) {
+        // 创建连接工厂
+        ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(USERNAME, PASSWORD, BROKERURL);
+        Connection connection = null;
+        try {
+            // 创建连接对象
+            connection = connectionFactory.createConnection();
+            // 创建会话(Session)对象, 第一个参数表示是否添加事务(通常设置为true), 第二个参数表示确认方式
+            Session session = connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
+            // 创建消息发送目的地
+            Destination destination = session.createTopic("MyTopic");
+            // 创建消息生产者
+            MessageProducer messageProducer = session.createProducer(destination);
+            // 发送消息
+            for (int i = 0; i < SEND_TIME; i++) {
+                TextMessage textMessage = session.createTextMessage();
+                textMessage.setText("ActiveMQ Message " + i);
+                messageProducer.send(textMessage);
+                System.out.println("发布消息: " + textMessage.getText());
+            }
+            // 提交当前事务中的所有的message, 并释放当前线程所持有的锁
+            session.commit();
+            // 关闭Session(Session关闭后, 没有必要关闭Producer和Consumer)
+            // session.close;
+        } catch (JMSException e) {
+            e.printStackTrace();
+        } finally {
+            // 关闭连接,如果有关闭连接的代码，则不需要关闭Session, Producer, Consumer
+            if (Objects.nonNull(connection)) {
+                try {
+                    connection.close();
+                } catch (JMSException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+}
+```
 ### 接收消息
+    创建两个消费者，需要先启动消费者，再启动发布者，否则消费者接收不到消息.
+```$xslt
+/**
+ * @author xzmeasy
+ * @since 2018/8/29
+ */
+public class ActivemqTopicConsumer1 {
+
+    /**
+     * 默认连接用户名
+     */
+    private static final String USERNAME = ActiveMQConnection.DEFAULT_USER;
+
+    /**
+     * 默认连接密码
+     */
+    private static final String PASSWORD = ActiveMQConnection.DEFAULT_PASSWORD;
+
+    /**
+     * 默认连接地址
+     */
+    private static final String BROKER_URL = ActiveMQConnection.DEFAULT_BROKER_URL;
+
+    public static void main(String[] args) {
+        ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(USERNAME, PASSWORD, BROKER_URL);
+        Connection connection = null;
+        try {
+            // 创建连接对象
+            connection = connectionFactory.createConnection();
+            // 开启连接
+            connection.start();
+            // 消费者消费消息的时候不需要在事务中
+            Session session = connection.createSession(Boolean.FALSE, Session.AUTO_ACKNOWLEDGE);
+            // 消息目的地的名称需要和生产者的保持一致，才能够消费到名称对应的生产这生产的消息
+            Destination destination = session.createTopic("MyTopic");
+            MessageConsumer messageConsumer = session.createConsumer(destination);
+            // 还有一种接受消息的方式是使用监听器, 实现MessageListener接口
+            messageConsumer.setMessageListener(message -> {
+                if (Objects.nonNull(message) && message instanceof TextMessage) {
+                    TextMessage textMessage = (TextMessage) message;
+                    try {
+                        System.out.println("订阅者 1 接收消息: " + textMessage.getText());
+                    } catch (JMSException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        } catch (JMSException e) {
+            e.printStackTrace();
+        }
+    }
+}
+// 消费者2同理
+```
 ## 对象模型详解
 ### ActiveMQConnectionFactory
         ActiveMQConnectionFactory是用来创建连接(Connection)的对象, 它实现了QueueConnectionFactory以及TopicConnectionFactory, 
