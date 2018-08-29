@@ -1,4 +1,4 @@
-package com.java.activemq;
+package com.java.activemq.queue.producer;
 
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
@@ -7,6 +7,8 @@ import javax.jms.*;
 import java.util.Objects;
 
 /**
+ * 生产者发送消息之后需要关闭连接, 释放资源
+ *
  * @author xzmeasy
  * @since 18-8-26
  */
@@ -48,11 +50,11 @@ public class ActivemqProducer {
             // 提交当前事务中的所有的message, 并释放当前线程所持有的锁
             session.commit();
             // 关闭Session(Session关闭后, 没有必要关闭Producer和Consumer)
-            session.close();
+            // session.close;
         } catch (JMSException e) {
             e.printStackTrace();
         } finally {
-            // 关闭连接
+            // 关闭连接,如果有关闭连接的代码，则不需要关闭Session, Producer, Consumer
             if (Objects.nonNull(connection)) {
                 try {
                     connection.close();
